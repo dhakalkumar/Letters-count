@@ -1,0 +1,152 @@
+package count;
+
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+
+public class Count extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6035396361181992164L;
+	private JFrame frame;
+	private JLabel prompt;
+	private JButton countNow,reset;
+	private JTextField inputText;
+	private JTextArea outputText;
+	private int count,flag;
+	private JPanel panel;
+	private JMenuItem fileExit,helpHowto,helpAbout;
+	private JMenuBar menuBar;
+	private JMenu fileMenu,helpMenu;
+	
+	public Count(){
+		frame = new JFrame("Count frequency of letters in a sentence");
+		prompt = new JLabel("Enter a sentence: ");
+		panel = new JPanel();
+		countNow = new JButton("Count");
+		countNow.addActionListener(new CountNow());
+		reset = new JButton("Reset");
+		reset.addActionListener(new Reset());
+		inputText = new JTextField(30);
+		outputText = new JTextArea(12,40);
+		outputText.setEditable(false);
+		JScrollPane scrollpane = new JScrollPane(outputText);
+		scrollpane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		panel.setLayout(new FlowLayout());
+		panel.add(prompt);
+		panel.add(inputText);
+		panel.add(countNow);
+		panel.add(reset);
+		//panel.add(outputText);
+		panel.add(scrollpane);
+		
+		fileExit = new JMenuItem("Exit");
+		fileExit.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				System.exit(0);
+			}
+		});
+		helpHowto = new JMenuItem("How to use?");
+		helpHowto.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JOptionPane.showMessageDialog(frame,
+						"This program counts the frequency of \n"
+						+ "all the letters in a sentence given \n"
+						+ "by the user. Enter the sentence in the \n"
+						+ "box at the top and press on the count button. \n"
+						+ "The result is displayed in the lower text area. \n\n"
+						+ "To start with a new sentence, press 'Reset' and \n"
+						+ "the input and output will be cleared to type the \n"
+						+ "new sentence! ",
+						"About", JOptionPane.INFORMATION_MESSAGE);	
+			}
+		});
+		helpAbout = new JMenuItem("About");
+		helpAbout.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JOptionPane.showMessageDialog(frame, "Developed by:\nKumar Dhakal\ndhakalkumar10@gmail.com");
+			}
+		});
+		menuBar = new JMenuBar();
+		fileMenu = new JMenu("File");
+		helpMenu = new JMenu("Help");
+		fileMenu.add(fileExit);
+		helpMenu.add(helpHowto);
+		helpMenu.add(helpAbout);
+		menuBar.add(fileMenu);
+		menuBar.add(helpMenu);
+		
+		frame.getContentPane().add(panel);
+		frame.setSize(500, 300);
+		frame.setResizable(false);
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setJMenuBar(menuBar);
+	}
+	
+	public class CountNow implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e){
+			if(inputText.getText().equals("")){
+				outputText.setText("Please enter a sentence to count the frequency of each letters!");
+			}
+			else{
+				String text = inputText.getText();
+				for(int i=0;i<text.length();i++){
+					count=0;
+					for(int j=0;j<text.length();j++)
+						if(text.charAt(j) == text.charAt(i)){
+							count++;
+						}
+						for(int k=0;k<i;k++)
+							if(text.charAt(k) == text.charAt(i)){
+								flag=1;
+							}
+						
+						if(flag!=1){
+							outputText.setText(outputText.getText()+"\n"+text.charAt(i)+" : "+count);
+						}
+						flag=0;
+				
+					//outputText.setText(outputText.getText()+"\n"+text.charAt(i)+" : "+count);
+					
+				}
+			}
+		}
+	}
+	
+	public class Reset implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e){
+			inputText.setText("");
+			outputText.setText("");
+		}
+	}
+	
+	public static void main(String[] args){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				new Count();
+			}
+		});
+	}
+}
